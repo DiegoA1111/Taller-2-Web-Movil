@@ -24,22 +24,20 @@ const AppState = {
     }
 };
 
+// Configuración de APIs locales (Taller 2)
+// Nota: Por ahora solo Express API está completamente funcional
 const API_CONFIG = {
     countries: {
-        key: 'sb1qj74dSiFbR08qkglbfcIOQ6I1AXcpqwi4nALH',
-        url: 'https://countryapi.io/api/all'
+        url: 'http://localhost:3001/countries' // Pendiente - API NestJS en desarrollo
     },
     weather: {
-        key: 'c66f8053624fdea5889e29ddb3ce5019',
-        url: 'https://api.openweathermap.org/data/2.5/weather'
+        url: 'http://localhost:3002/weather' // Funcional
     },
     videogames: {
-        key: 'e4cbaf721d1041219bf966887cbd1765',
-        url: 'https://api.rawg.io/api/games'
+        url: 'http://localhost:3003/games' // Pendiente - API FastAPI en desarrollo
     },
     football: {
-        key: 'eb96a081fad2536f452fe7b4cd686592',
-        url: 'https://v3.football.api-sports.io/fixtures'
+        url: 'http://localhost:3002/football' // Funcional
     }
 };
 
@@ -179,14 +177,13 @@ const getCountries = async(fullLoad = false) => {
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando países...</p>';
 
     try {
-        const apiKey = API_CONFIG.countries.key;
-        const url = `${API_CONFIG.countries.url}?apikey=${apiKey}`;
+        const url = API_CONFIG.countries.url;
 
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
-        const countriesList = Object.values(data);
+        const countriesList = Array.isArray(data) ? data : Object.values(data);
         
         AppState.data.countries = countriesList;
         AppState.filteredData.countries = [...countriesList];
@@ -214,14 +211,11 @@ const getWeather = async(fullLoad = false) => {
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando clima...</p>';
 
     try {
-        const cities = ['Arica', 'Iquique', 'Antofagasta', 'Coquimbo', 'Valparaiso', 'Santiago', 'Concepción', 'Temuco'];
-
-        const weatherPromises = cities.map(city => 
-            fetch(`${API_CONFIG.weather.url}?q=${city}&appid=${API_CONFIG.weather.key}&units=metric&lang=es`)
-                .then(res => res.json())
-        );
+        const url = API_CONFIG.weather.url;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         
-        const weatherDataArray = await Promise.all(weatherPromises);
+        const weatherDataArray = await response.json();
         AppState.data.weather = weatherDataArray;
         AppState.filteredData.weather = [...weatherDataArray];
 
@@ -248,18 +242,18 @@ const getVideogames = async(fullLoad = false) => {
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando videojuegos...</p>';
 
     try {
-        const apiKey = API_CONFIG.videogames.key;
-        const pageSize = fullLoad ? 40 : 20;
-        const url = `${API_CONFIG.videogames.url}?key=${apiKey}&page_size=${pageSize}`;
+        const limit = fullLoad ? 40 : 20;
+        const url = `${API_CONFIG.videogames.url}?skip=0&limit=${limit}`;
             
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
-        AppState.data.videogames = data.results;
-        AppState.filteredData.videogames = [...data.results];
+        const gamesList = Array.isArray(data) ? data : (data.results || []);
+        AppState.data.videogames = gamesList;
+        AppState.filteredData.videogames = [...gamesList];
 
-        renderVideogames(container, data.results, fullLoad);
+        renderVideogames(container, gamesList, fullLoad);
         
         if (fullLoad) updateResultsCount('videogames');
 
@@ -282,19 +276,13 @@ const getFootball = async(fullLoad = false) => {
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando partidos...</p>';
 
     try {
-        const url = `${API_CONFIG.football.url}?live=all`;
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-host': 'v3.football.api-sports.io',
-                'x-rapidapi-key': API_CONFIG.football.key
-            }
-        });
-
+        const url = API_CONFIG.football.url;
+        const response = await fetch(url);
+        
         if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
         
-        if (data.results === 0) {
+        if (data.results === 0 || !data.response || data.response.length === 0) {
             container.innerHTML = '<p class="text-center col-span-full">No hay partidos en vivo</p>';
             return;
         }
@@ -323,7 +311,7 @@ function renderCountries(container, countries, fullLoad = false) {
         
         const countryName = country.name;
         const countryCapital = country.capital || 'N/A';
-        const countryFlag = country.flag?.large || country.flag?.medium || '';
+        const countryFlag = country.flag || '';
 
         countryCard.innerHTML = `
             <img src="${countryFlag}" alt="Bandera de ${countryName}" class="w-full h-32 object-cover mb-2 rounded-md">
@@ -567,7 +555,7 @@ function showDetail(type, item) {
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                         <div class="md:flex">
                             <div class="md:w-1/2">
-                                <img src="${item.flag?.large || item.flag?.medium}" alt="Bandera de ${item.name}" class="w-full h-64 md:h-full object-cover">
+                                <img src="${item.flag || ''}" alt="Bandera de ${item.name}" class="w-full h-64 md:h-full object-cover">
                             </div>
                             <div class="md:w-1/2 p-6">
                                 <h1 class="text-3xl font-bold mb-4">${item.name}</h1>
@@ -576,8 +564,8 @@ function showDetail(type, item) {
                                     <p><strong>Región:</strong> ${item.region || 'N/A'}</p>
                                     <p><strong>Población:</strong> ${item.population ? item.population.toLocaleString() : 'N/A'}</p>
                                     <p><strong>Área:</strong> ${item.area ? item.area.toLocaleString() + ' km²' : 'N/A'}</p>
-                                    <p><strong>Moneda:</strong> ${item.currencies ? Object.values(item.currencies)[0]?.name : 'N/A'}</p>
-                                    <p><strong>Idiomas:</strong> ${item.languages ? Object.values(item.languages).join(', ') : 'N/A'}</p>
+                                    <p><strong>Moneda:</strong> ${item.currencies ? (typeof item.currencies === 'string' ? JSON.parse(item.currencies) : item.currencies) : 'N/A'}</p>
+                                    <p><strong>Idiomas:</strong> ${item.languages ? (typeof item.languages === 'string' ? Object.values(JSON.parse(item.languages)).join(', ') : Object.values(item.languages).join(', ')) : 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
@@ -597,10 +585,10 @@ function showDetail(type, item) {
                                 <div>
                                     <h3 class="font-bold text-lg mb-2">Información General</h3>
                                     <div class="space-y-2">
-                                        <p><strong>Rating:</strong> ${item.rating}/5</p>
+                                        <p><strong>Rating:</strong> ${item.rating || 0}/5</p>
                                         <p><strong>Lanzado:</strong> ${item.released || 'N/A'}</p>
-                                        <p><strong>Géneros:</strong> ${item.genres ? item.genres.map(g => g.name).join(', ') : 'N/A'}</p>
-                                        <p><strong>Plataformas:</strong> ${item.platforms ? item.platforms.slice(0, 3).map(p => p.platform.name).join(', ') : 'N/A'}</p>
+                                        <p><strong>Géneros:</strong> ${item.genres ? (typeof item.genres === 'string' ? JSON.parse(item.genres).map(g => g.name || g).join(', ') : item.genres.map(g => g.name || g).join(', ')) : 'N/A'}</p>
+                                        <p><strong>Plataformas:</strong> ${item.platforms ? (typeof item.platforms === 'string' ? JSON.parse(item.platforms).slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ') : item.platforms.slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ')) : 'N/A'}</p>
                                     </div>
                                 </div>
                                 <div>
