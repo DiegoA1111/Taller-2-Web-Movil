@@ -18,12 +18,12 @@
    - [ ] Pendiente: Conexión de fútbol a BD
 
 3. **API NestJS (Países)**
-   - [ ] Pendiente: Iniciar implementación
-   - [ ] Pendiente: Configurar proyecto NestJS
-   - [ ] Pendiente: Configurar TypeORM y MySQL
-   - [ ] Pendiente: Crear entidades y modelos
-   - [ ] Pendiente: Implementar endpoints
-   - [ ] Pendiente: Seed de datos
+   - [x] Pendiente: Iniciar implementación
+   - [x] Pendiente: Configurar proyecto NestJS
+   - [x] Pendiente: Configurar TypeORM y MySQL
+   - [x] Pendiente: Crear entidades y modelos
+   - [x] Pendiente: Implementar endpoints
+   - [x] Pendiente: Seed de datos
 
 4. **API FastAPI (Videojuegos)**
    - [ ] Pendiente: Iniciar implementación
