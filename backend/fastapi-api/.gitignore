@@ -1,0 +1,20 @@
+# Archivo .gitignore para el proyecto FastAPI
+
+# Entorno virtual
+.venv/
+
+# Bases de datos locales
+instance/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de configuración del editor
+.vscode/
+.idea/
+
+# Archivos de entorno
+.env
