@@ -13,13 +13,11 @@
 
 Este proyecto consiste en el desarrollo de un ecosistema completo compuesto por tres APIs backend independientes y una aplicación web móvil empaquetada como APK Android mediante Apache Cordova.
 
-**Estado del Proyecto**: En desarrollo
-
-La aplicación **InfoMóvil** permitirá a los usuarios acceder a información dinámica sobre:
-- Países del mundo
-- Información del clima
-- Videojuegos
-- Partidos de fútbol
+La aplicación InfoMóvil permitirá a los usuarios acceder a información dinámica sobre:
+1. Países del mundo
+2. Información del clima
+3. Videojuegos
+4. Partidos de fútbol
 
 ## Arquitectura del Sistema
 
@@ -32,12 +30,15 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 - **Base de Datos**: PostgreSQL
 - **Puerto**: 3002
 - **Endpoints**: `/weather`, `/football`
-- **Estado**: Funcional - primera API completada
+- **Estado**: Funcional
 - **Ubicación**: `backend/express-api/`
 
 #### 2. Countries API - NestJS
 - **Tecnología**: NestJS (Node.js + TypeScript)
-- **Estado**: Pendiente de implementar
+- **Base de Datos**: PostgreSQL
+- **Puerto**: 3001
+- **Endpoints**: `/countries`
+- **Estado**: Funcional
 - **Ubicación**: `backend/nestjs-api/`
 
 #### 3. Videojuegos API - FastAPI
@@ -86,9 +87,9 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 
 #### Node.js
 **Windows/Mac:**
-- Descarga desde: https://nodejs.org/
-- Ejecuta el instalador
-- Verifica: `node --version` y `npm --version`
+1. Descarga desde: https://nodejs.org/
+2. 2.Ejecutar el instalador
+3. Verificar con `node --version` y `npm --version`
 
 **Linux:**
 ```bash
@@ -128,28 +129,13 @@ cd Taller-2-Web-Movil
 ```
 
 ### 2. Configurar Bases de Datos PostgreSQL
-
-**Importante para trabajo en equipo:** Cada integrante debe configurar su propia base de datos. El archivo `.env` con las credenciales NO se sube a Git (está en `.gitignore`).
-
-#### Opción A: Base de datos local (Recomendado)
-
 Cada integrante crea las bases de datos en su PostgreSQL local:
 ```sql
 CREATE DATABASE countries_db;
 CREATE DATABASE weather_db;
 CREATE DATABASE videogames_db;
 ```
-
-Luego cada uno configura su archivo `.env` en cada API con sus credenciales locales.
-
-#### Opción B: Base de datos compartida en la nube
-
-Si prefieren usar una base de datos compartida, pueden usar servicios gratuitos como:
-- **Supabase** (https://supabase.com)
-- **Railway** (https://railway.app)
-- **Neon** (https://neon.tech)
-
-Un integrante crea las bases de datos y comparte las credenciales de forma segura con el equipo.
+Finalmente cada uno configura su archivo `.env` en cada API con sus credenciales locales.
 
 ### 3. Configurar y Ejecutar APIs
 
@@ -229,7 +215,10 @@ El APK se generará en: `platforms/android/app/build/outputs/apk/debug/app-debug
 ```
 Taller-2-Web-Movil/
 ├── backend/
-│   ├── nestjs-api/          # API de Países (NestJS) - Pendiente
+│   ├── nestjs-api/          # API de Países (NestJS) - Funcional
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── .env.example
 │   ├── express-api/         # API de Clima y Fútbol (Express) - Funcional
 │   │   ├── server.js
 │   │   ├── package.json
@@ -254,6 +243,9 @@ Taller-2-Web-Movil/
 - `GET /football` - Obtener partidos de fútbol
 - `GET /health` - Health check
 
+### Countries API (NestJS - Puerto 3001)
+- `GET /countries` - Obtener todos los países
+
 
 ## Características de la Aplicación
 
@@ -262,7 +254,9 @@ Taller-2-Web-Movil/
 - [x] Filtrado y ordenamiento dinámico (del Taller 1)
 - [x] Vistas detalladas por recurso (del Taller 1)
 - [x] Estados de carga y manejo de errores (del Taller 1)
-- [ ] Consumo de 3 APIs backend independientes (en desarrollo)
+- [x] Consumo de API Express (Clima y Fútbol) - Funcional
+- [x] Consumo de API NestJS (Países) - Funcional
+- [ ] Consumo de API FastAPI (Videojuegos) - Pendiente
 - [ ] Empaquetado como APK Android (pendiente)
 
 ## Desarrollo
