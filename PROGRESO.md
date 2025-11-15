@@ -1,7 +1,7 @@
 #Progreso del Proyecto
 ## Fase Actual: Desarrollo de APIs Backend
 
-**Progreso General**: 1 de 3 APIs completamente funcionales
+**Progreso General**: 2 de 3 APIs completamente funcionales
 
 1. **Estructura del Proyecto**
    - [x] Carpetas organizadas para las 3 APIs
@@ -10,7 +10,7 @@
 
 2. **API Express (Clima y Fútbol)**
    - [x] Estructura base del servidor
-   - [x] Configuración de MySQL
+   - [x] Configuración de PostgreSQL
    - [x] Endpoints de clima implementados
    - [x] Endpoint de fútbol implementado
    - [x] Inicialización automática de BD
@@ -18,12 +18,14 @@
    - [ ] Pendiente: Conexión de fútbol a BD
 
 3. **API NestJS (Países)**
-   - [x] Pendiente: Iniciar implementación
-   - [x] Pendiente: Configurar proyecto NestJS
-   - [x] Pendiente: Configurar TypeORM y MySQL
-   - [x] Pendiente: Crear entidades y modelos
-   - [x] Pendiente: Implementar endpoints
-   - [x] Pendiente: Seed de datos
+   - [x] Estructura base del proyecto NestJS
+   - [x] Configuración de TypeORM y PostgreSQL
+   - [x] Entidades y modelos creados
+   - [x] Endpoints implementados (GET /countries)
+   - [x] Seed de datos (12 países)
+   - [x] Configuración de CORS
+   - [x] Archivo .env.example creado
+   - [ ] Pendiente: Documentación Swagger
 
 4. **API FastAPI (Videojuegos)**
    - [ ] Pendiente: Iniciar implementación
@@ -36,14 +38,20 @@
 ### En Progreso
 
 1. **Integración Frontend-Backend**
-   - [ ] Modificación del archivo `apis.js` para que pueda consumir APIs locales
-   - [ ] Pruebas de integración
-   - [ ] Manejo de errores
+   - [x] Modificación del archivo `apis.js` para consumir APIs locales
+   - [x] Integración con API Express (Clima y Fútbol) - Funcional
+   - [x] Integración con API NestJS (Países) - Funcional
+   - [ ] Integración con API FastAPI (Videojuegos) - Pendiente
+   - [ ] Pruebas de integración completas
+   - [ ] Manejo de errores mejorado
 
 2. **Bases de Datos**
-   - [ ] Creación de esquemas completos
-   - [ ] Datos de prueba
-   - [ ] Migraciones
+   - [x] Esquema de Express API (weather_db) - Funcional
+   - [x] Esquema de NestJS API (countries_db) - Funcional
+   - [x] Datos de prueba para Express (clima y fútbol)
+   - [x] Datos de prueba para NestJS (12 países)
+   - [ ] Esquema de FastAPI (videogames_db) - Pendiente
+   - [ ] Migraciones formales (actualmente usando synchronize: true)
 
 ### Pendiente
 

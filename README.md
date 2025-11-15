@@ -35,6 +35,9 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 
 #### 2. Countries API - NestJS
 - **Tecnología**: NestJS (Node.js + TypeScript)
+- **Base de Datos**: PostgreSQL
+- **Puerto**: 3001
+- **Endpoints**: `/countries`
 - **Estado**: Funcional
 - **Ubicación**: `backend/nestjs-api/`
 
@@ -212,7 +215,10 @@ El APK se generará en: `platforms/android/app/build/outputs/apk/debug/app-debug
 ```
 Taller-2-Web-Movil/
 ├── backend/
-│   ├── nestjs-api/          # API de Países (NestJS) - Pendiente
+│   ├── nestjs-api/          # API de Países (NestJS) - Funcional
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── .env.example
 │   ├── express-api/         # API de Clima y Fútbol (Express) - Funcional
 │   │   ├── server.js
 │   │   ├── package.json
@@ -237,6 +243,9 @@ Taller-2-Web-Movil/
 - `GET /football` - Obtener partidos de fútbol
 - `GET /health` - Health check
 
+### Countries API (NestJS - Puerto 3001)
+- `GET /countries` - Obtener todos los países
+
 
 ## Características de la Aplicación
 
@@ -245,7 +254,9 @@ Taller-2-Web-Movil/
 - [x] Filtrado y ordenamiento dinámico (del Taller 1)
 - [x] Vistas detalladas por recurso (del Taller 1)
 - [x] Estados de carga y manejo de errores (del Taller 1)
-- [ ] Consumo de 3 APIs backend independientes (en desarrollo)
+- [x] Consumo de API Express (Clima y Fútbol) - Funcional
+- [x] Consumo de API NestJS (Países) - Funcional
+- [ ] Consumo de API FastAPI (Videojuegos) - Pendiente
 - [ ] Empaquetado como APK Android (pendiente)
 
 ## Desarrollo
