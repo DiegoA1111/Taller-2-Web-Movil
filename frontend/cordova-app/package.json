@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "cordova-android": "^14.0.1",
+    "cordova-plugin-splashscreen": "5",
+    "cordova-plugin-statusbar": "2",
+    "cordova-plugin-whitelist": "1"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-splashscreen": {}
+    },
+    "platforms": [
+      "android"
+    ]
+  }
+}
