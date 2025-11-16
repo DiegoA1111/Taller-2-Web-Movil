@@ -18,7 +18,7 @@ async function bootstrap() {
   await countriesService.seed();
   // -------------------------
 
-  await app.listen(port);
-  console.log(`API de Países (NestJS) corriendo en http://localhost:${port}`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`API de Países (NestJS) corriendo en http://0.0.0.0:${port}`);
 }
 bootstrap();

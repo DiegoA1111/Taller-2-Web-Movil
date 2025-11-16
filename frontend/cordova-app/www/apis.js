@@ -28,16 +28,16 @@ const AppState = {
 // Nota: Por ahora solo Express API está completamente funcional
 const API_CONFIG = {
     countries: {
-        url: 'http://192.168.1.82:3001/countries' // Pendiente - API NestJS en desarrollo
+        url: 'http://192.168.1.82:3001/countries' // API NestJS
     },
     weather: {
-        url: 'http://192.168.1.82:3002/weather' // Funcional
+        url: 'http://192.168.1.82:3002/weather' // API Express
     },
     videogames: {
-        url: 'http://192.168.1.82:3003/games' // Pendiente - API FastAPI en desarrollo
+        url: 'http://192.168.1.82:8000/games' // API FastAPI (puerto 8000)
     },
     football: {
-        url: 'http://192.168.1.82:3002/football' // Funcional
+        url: 'http://192.168.1.82:3002/football' // API Express
     }
 };
 
@@ -178,11 +178,24 @@ const getCountries = async(fullLoad = false) => {
 
     try {
         const url = API_CONFIG.countries.url;
+        console.log('Fetching countries from:', url);
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
+        
+        console.log('Countries response status:', response.status);
+        
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
         const data = await response.json();
+        console.log('Countries data received:', data.length, 'items');
+        
         const countriesList = Array.isArray(data) ? data : Object.values(data);
         
         AppState.data.countries = countriesList;
@@ -194,7 +207,7 @@ const getCountries = async(fullLoad = false) => {
 
     } catch (error) {
         console.error("Error al obtener países:", error);
-        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar países</p>';
+        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar países: ${error.message}</p>`;
     } finally {
         AppState.loading.countries = false;
     }
@@ -212,10 +225,24 @@ const getWeather = async(fullLoad = false) => {
 
     try {
         const url = API_CONFIG.weather.url;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        console.log('Fetching weather from:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
+        
+        console.log('Weather response status:', response.status);
+        
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         
         const weatherDataArray = await response.json();
+        console.log('Weather data received:', weatherDataArray.length, 'items');
+        
         AppState.data.weather = weatherDataArray;
         AppState.filteredData.weather = [...weatherDataArray];
 
@@ -225,7 +252,7 @@ const getWeather = async(fullLoad = false) => {
 
     } catch (error) {
         console.error("Error al obtener clima:", error);
-        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar clima</p>';
+        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar clima: ${error.message}</p>`;
     } finally {
         AppState.loading.weather = false;
     }
@@ -244,12 +271,25 @@ const getVideogames = async(fullLoad = false) => {
     try {
         const limit = fullLoad ? 40 : 20;
         const url = `${API_CONFIG.videogames.url}?skip=0&limit=${limit}`;
+        console.log('Fetching videogames from:', url);
             
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
+        
+        console.log('Videogames response status:', response.status);
+        
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
         const data = await response.json();
         const gamesList = Array.isArray(data) ? data : (data.results || []);
+        console.log('Videogames data received:', gamesList.length, 'items');
+        
         AppState.data.videogames = gamesList;
         AppState.filteredData.videogames = [...gamesList];
 
@@ -259,7 +299,7 @@ const getVideogames = async(fullLoad = false) => {
 
     } catch (error) {
         console.error("Error al obtener videojuegos:", error);
-        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar videojuegos</p>';
+        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar videojuegos: ${error.message}</p>`;
     } finally {
         AppState.loading.videogames = false;
     }
@@ -277,10 +317,22 @@ const getFootball = async(fullLoad = false) => {
 
     try {
         const url = API_CONFIG.football.url;
-        const response = await fetch(url);
+        console.log('Fetching football from:', url);
         
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
+        
+        console.log('Football response status:', response.status);
+        
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         const data = await response.json();
+        console.log('Football data received:', data);
         
         if (data.results === 0 || !data.response || data.response.length === 0) {
             container.innerHTML = '<p class="text-center col-span-full">No hay partidos en vivo</p>';
@@ -296,7 +348,7 @@ const getFootball = async(fullLoad = false) => {
 
     } catch (error) {
         console.error('Error al obtener fútbol:', error);
-        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar partidos</p>';
+        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar partidos: ${error.message}</p>`;
     } finally {
         AppState.loading.football = false;
     }

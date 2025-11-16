@@ -198,9 +198,9 @@ app.get('/health', (req, res) => {
 
 async function startServer() {
   await initDatabase();
-  app.listen(PORT, () => {
-    console.log(`API del clima corriendo en http://localhost:${PORT}`);
-    console.log(`Chequeo de salud corre en http://localhost:${PORT}/health`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`API del clima corriendo en http://0.0.0.0:${PORT}`);
+    console.log(`Chequeo de salud corre en http://0.0.0.0:${PORT}/health`);
   });
 }
 
