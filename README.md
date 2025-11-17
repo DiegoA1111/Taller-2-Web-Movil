@@ -166,6 +166,24 @@ Taller-2-Web-Movil/
 - [x] Consumo de API FastAPI (Videojuegos) - Funcional
 - [x] Empaquetado como APK Android - Funcional
 
+## Desarrollo
+
+### Modo Desarrollo
+1. Iniciar las tres APIs en terminales separadas
+2. Abrir `frontend/index.html` en un navegador o usar un servidor local:
+```bash
+# Con Python
+python -m http.server 8000
+
+# Con Node.js
+npx http-server
+```
+
+### Modo Producción (APK)
+1. Asegurarse de que todas las APIs estén ejecutándose
+2. Actualizar las URLs en `apis.js` para apuntar a los servidores de producción
+3. Construir el APK con Cordova
+
 ## Documentación Adicional
 
 - **[GUIA_EJECUCION.md](GUIA_EJECUCION.md)** - Guía completa de instalación, configuración y ejecución
@@ -178,10 +196,4 @@ Taller-2-Web-Movil/
 - El APK generado requerirá permisos de Internet para consumir las APIs
 - Las bases de datos se inicializan automáticamente con datos de ejemplo al iniciar las APIs
 
-## Licencia
 
-Este proyecto fue desarrollado como parte del Taller 2 de Desarrollo Web Móvil.
-
-## Contacto
-
-Para consultas o problemas, contactar al grupo 8.
