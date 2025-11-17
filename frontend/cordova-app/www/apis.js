@@ -1,4 +1,6 @@
 
+console.log('[apis.js] Archivo cargado correctamente');
+
 const AppState = {
     currentView: 'home',
     currentSection: null,
@@ -25,24 +27,25 @@ const AppState = {
 };
 
 // Configuración de APIs locales (Taller 2)
-// Nota: Por ahora solo Express API está completamente funcional
+// IMPORTANTE: Esta IP está hardcodeada para el APK. Si cambias de red, actualiza esta IP.
 const API_CONFIG = {
     countries: {
-        url: 'http://192.168.1.82:3001/countries' // API NestJS
+        url: 'http://192.168.1.9:3001/countries' // API NestJS
     },
     weather: {
-        url: 'http://192.168.1.82:3002/weather' // API Express
+        url: 'http://192.168.1.9:3002/weather' // API Express
     },
     videogames: {
-        url: 'http://192.168.1.82:8000/games' // API FastAPI (puerto 8000)
+        url: 'http://192.168.1.9:3003/games' // API FastAPI
     },
     football: {
-        url: 'http://192.168.1.82:3002/football' // API Express
+        url: 'http://192.168.1.9:3002/football' // API Express
     }
 };
 
 // Sistema de navegación SPA
 function showSection(section) {
+    console.log(`[showSection] Iniciando para sección: ${section}`);
     AppState.currentView = section;
     AppState.currentSection = section;
     
@@ -72,17 +75,24 @@ function showSection(section) {
         targetView = document.getElementById(`${section}-view`);
     }
     
+    console.log(`[showSection] targetView encontrado:`, targetView);
+    
     if (targetView) {
         targetView.style.display = 'block';
         setTimeout(() => targetView.classList.add('active'), 50);
+    } else {
+        console.error(`[showSection] No se encontró targetView para ${section}`);
     }
     
     const controlsSection = document.getElementById('controls-section');
     if (section === 'home' || section === 'landing') {
         controlsSection.classList.add('hidden');
+        console.log(`[showSection] Ocultando controles para ${section}`);
     } else {
         controlsSection.classList.remove('hidden');
+        console.log(`[showSection] Mostrando controles y cargando datos para ${section}`);
         setupControls(section);
+        // Cargar datos inmediatamente
         loadSectionData(section);
     }
     
@@ -134,14 +144,34 @@ function setupControls(section) {
 }
 
 async function loadSectionData(section) {
-    if (AppState.data[section].length > 0) {
-        AppState.filteredData[section] = [...AppState.data[section]];
-        renderSection(section);
+    console.log(`loadSectionData llamado para: ${section}`);
+    const container = document.getElementById(`${section}-full-container`);
+    
+    // Verificar que el contenedor exista
+    if (!container) {
+        console.error(`Contenedor ${section}-full-container no encontrado, reintentando...`);
+        // Reintentar después de un breve delay
+        setTimeout(() => {
+            loadSectionData(section);
+        }, 100);
         return;
     }
     
-    AppState.loading[section] = true;
-    const container = document.getElementById(`${section}-full-container`);
+    console.log(`Contenedor encontrado para ${section}, datos actuales:`, AppState.data[section].length);
+    
+    // Si ya hay datos cargados, asegurarse de renderizarlos
+    if (AppState.data[section].length > 0) {
+        console.log(`Renderizando datos existentes para ${section}`);
+        AppState.filteredData[section] = [...AppState.data[section]];
+        // Renderizar inmediatamente ya que el contenedor está visible
+        renderSection(section);
+        updateResultsCount(section);
+        return;
+    }
+    
+    // Si no hay datos, cargarlos ahora
+    console.log(`Cargando datos nuevos para ${section}`);
+    // NO establecer loading aquí, las funciones get lo hacen internamente
     
     try {
         switch (section) {
@@ -160,43 +190,41 @@ async function loadSectionData(section) {
         }
     } catch (error) {
         console.error(`Error loading ${section}:`, error);
-        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar ${section}</p>`;
-    } finally {
-        AppState.loading[section] = false;
+        if (container) {
+            container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar ${section}</p>`;
+        }
     }
 }
 
 const getCountries = async(fullLoad = false) => {
+    console.log('[getCountries] Iniciando, fullLoad:', fullLoad);
     const container = fullLoad ? 
         document.getElementById("countries-full-container") : 
         document.getElementById("countries-container");
     
-    if (AppState.loading.countries) return;
+    if (!container) {
+        console.error('[getCountries] Contenedor no encontrado');
+        return;
+    }
+    
+    if (AppState.loading.countries) {
+        console.log('[getCountries] Ya está cargando, saltando...');
+        return;
+    }
     AppState.loading.countries = true;
     
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando países...</p>';
 
     try {
         const url = API_CONFIG.countries.url;
-        console.log('Fetching countries from:', url);
 
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors'
-        });
-        
-        console.log('Countries response status:', response.status);
-        
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
-        console.log('Countries data received:', data.length, 'items');
-        
         const countriesList = Array.isArray(data) ? data : Object.values(data);
+        
+        console.log('[getCountries] Datos recibidos:', countriesList.length, 'países');
         
         AppState.data.countries = countriesList;
         AppState.filteredData.countries = [...countriesList];
@@ -204,66 +232,75 @@ const getCountries = async(fullLoad = false) => {
         renderCountries(container, fullLoad ? countriesList : countriesList.slice(0, 20), fullLoad);
         
         if (fullLoad) updateResultsCount('countries');
+        console.log('[getCountries] Renderizado completado');
 
     } catch (error) {
         console.error("Error al obtener países:", error);
-        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar países: ${error.message}</p>`;
+        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar países</p>';
     } finally {
         AppState.loading.countries = false;
     }
 };
 
 const getWeather = async(fullLoad = false) => {
+    console.log('[getWeather] Iniciando, fullLoad:', fullLoad);
     const container = fullLoad ? 
         document.getElementById("weather-full-container") : 
         document.getElementById("weather-container");
     
-    if (AppState.loading.weather) return;
+    if (!container) {
+        console.error('[getWeather] Contenedor no encontrado');
+        return;
+    }
+    
+    if (AppState.loading.weather) {
+        console.log('[getWeather] Ya está cargando, saltando...');
+        return;
+    }
     AppState.loading.weather = true;
     
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando clima...</p>';
 
     try {
         const url = API_CONFIG.weather.url;
-        console.log('Fetching weather from:', url);
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors'
-        });
-        
-        console.log('Weather response status:', response.status);
-        
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         
         const weatherDataArray = await response.json();
-        console.log('Weather data received:', weatherDataArray.length, 'items');
-        
         AppState.data.weather = weatherDataArray;
         AppState.filteredData.weather = [...weatherDataArray];
 
+        console.log('[getWeather] Datos recibidos:', weatherDataArray.length, 'ciudades');
         renderWeather(container, weatherDataArray, fullLoad);
         
         if (fullLoad) updateResultsCount('weather');
+        console.log('[getWeather] Renderizado completado');
 
     } catch (error) {
         console.error("Error al obtener clima:", error);
-        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar clima: ${error.message}</p>`;
+        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar clima</p>';
     } finally {
         AppState.loading.weather = false;
     }
 };
 
 const getVideogames = async(fullLoad = false) => {
+    console.log('[getVideogames] Iniciando, fullLoad:', fullLoad);
     const container = fullLoad ? 
         document.getElementById("videogames-full-container") : 
         document.getElementById("videogames-container");
     
-    if (AppState.loading.videogames) return;
+    // Verificar que el contenedor exista
+    if (!container) {
+        console.error('[getVideogames] Contenedor no encontrado');
+        AppState.loading.videogames = false;
+        return;
+    }
+    
+    if (AppState.loading.videogames) {
+        console.log('[getVideogames] Ya está cargando, saltando...');
+        return;
+    }
     AppState.loading.videogames = true;
     
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando videojuegos...</p>';
@@ -271,68 +308,61 @@ const getVideogames = async(fullLoad = false) => {
     try {
         const limit = fullLoad ? 40 : 20;
         const url = `${API_CONFIG.videogames.url}?skip=0&limit=${limit}`;
-        console.log('Fetching videogames from:', url);
             
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors'
-        });
-        
-        console.log('Videogames response status:', response.status);
-        
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
         const gamesList = Array.isArray(data) ? data : (data.results || []);
-        console.log('Videogames data received:', gamesList.length, 'items');
+        
+        // Debug: ver qué datos estamos recibiendo
+        console.log('Datos recibidos de la API de videojuegos:', gamesList);
+        if (gamesList.length > 0) {
+            console.log('Primer videojuego:', gamesList[0]);
+        }
         
         AppState.data.videogames = gamesList;
         AppState.filteredData.videogames = [...gamesList];
 
+        console.log('[getVideogames] Renderizando', gamesList.length, 'videojuegos');
         renderVideogames(container, gamesList, fullLoad);
         
         if (fullLoad) updateResultsCount('videogames');
+        console.log('[getVideogames] Renderizado completado');
 
     } catch (error) {
         console.error("Error al obtener videojuegos:", error);
-        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar videojuegos: ${error.message}</p>`;
+        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar videojuegos</p>';
     } finally {
         AppState.loading.videogames = false;
     }
 };
 
 const getFootball = async(fullLoad = false) => {
+    console.log('[getFootball] Iniciando, fullLoad:', fullLoad);
     const container = fullLoad ? 
         document.getElementById("football-full-container") : 
         document.getElementById("football-container");
     
-    if (AppState.loading.football) return;
+    if (!container) {
+        console.error('[getFootball] Contenedor no encontrado');
+        return;
+    }
+    
+    if (AppState.loading.football) {
+        console.log('[getFootball] Ya está cargando, saltando...');
+        return;
+    }
     AppState.loading.football = true;
     
     container.innerHTML = '<p class="text-center col-span-full loading">Cargando partidos...</p>';
 
     try {
         const url = API_CONFIG.football.url;
-        console.log('Fetching football from:', url);
+        const response = await fetch(url);
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors'
-        });
-        
-        console.log('Football response status:', response.status);
-        
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
-        console.log('Football data received:', data);
         
         if (data.results === 0 || !data.response || data.response.length === 0) {
             container.innerHTML = '<p class="text-center col-span-full">No hay partidos en vivo</p>';
@@ -342,13 +372,15 @@ const getFootball = async(fullLoad = false) => {
         AppState.data.football = data.response;
         AppState.filteredData.football = [...data.response];
 
+        console.log('[getFootball] Datos recibidos:', data.response.length, 'partidos');
         renderFootball(container, data.response, fullLoad);
         
         if (fullLoad) updateResultsCount('football');
+        console.log('[getFootball] Renderizado completado');
 
     } catch (error) {
         console.error('Error al obtener fútbol:', error);
-        container.innerHTML = `<p class="text-center col-span-full text-red-500">Error al cargar partidos: ${error.message}</p>`;
+        container.innerHTML = '<p class="text-center col-span-full text-red-500">Error al cargar partidos</p>';
     } finally {
         AppState.loading.football = false;
     }
@@ -415,20 +447,34 @@ function renderWeather(container, weatherArray, fullLoad = false) {
 function renderVideogames(container, games, fullLoad = false) {
     container.innerHTML = '';
     
-    games.forEach(game => {
+    if (!games || games.length === 0) {
+        container.innerHTML = '<p class="text-center col-span-full text-gray-500">No hay videojuegos disponibles</p>';
+        return;
+    }
+    
+    games.forEach((game, index) => {
+        // Debug: ver cada juego individual
+        console.log(`Renderizando juego ${index}:`, game);
+        
         const gameCard = document.createElement('div');
         gameCard.className = 'border rounded-lg p-4 shadow-md bg-white card-hover cursor-pointer transition-all duration-300';
 
-        const gameName = game.name;
-        const gameImage = game.background_image || '';
-        const gameRating = game.rating || 0;
-        const gameReleased = game.released || 'N/A';
+        // Mapear campos de la API FastAPI (title, release_year) a lo que espera el frontend
+        // La API devuelve: title, genre, platform, release_year, rating, id
+        const gameName = game.title || game.name || 'Sin título';
+        const gameImage = game.background_image || game.image || '';
+        const gameRating = game.rating !== undefined ? game.rating : 0;
+        const gameReleased = game.released || (game.release_year !== undefined ? game.release_year.toString() : 'N/A');
+        const gameGenre = game.genre || '';
+        const gamePlatform = game.platform || '';
 
         gameCard.innerHTML = `
-            <img src="${gameImage}" alt="Imagen de ${gameName}" class="w-full h-32 object-cover mb-2 rounded-md">
+            ${gameImage ? `<img src="${gameImage}" alt="Imagen de ${gameName}" class="w-full h-32 object-cover mb-2 rounded-md">` : '<div class="w-full h-32 bg-gray-200 mb-2 rounded-md flex items-center justify-center"><span class="text-gray-400">Sin imagen</span></div>'}
             <h3 class="font-bold text-lg mb-1">${gameName}</h3>
             <p class="text-gray-700">Rating: ${gameRating}</p>
             <p class="text-gray-500 text-sm">Lanzado: ${gameReleased}</p>
+            ${gameGenre ? `<p class="text-gray-500 text-sm">Género: ${gameGenre}</p>` : ''}
+            ${gamePlatform ? `<p class="text-gray-500 text-sm">Plataforma: ${gamePlatform}</p>` : ''}
             ${fullLoad ? `<p class="text-sm text-gray-500 mt-1">Click para ver detalles</p>` : ''}
         `;
 
@@ -492,7 +538,9 @@ function filterAndSort(section) {
                     return item.name.toLowerCase().includes(searchTerm) || 
                            (item.capital && item.capital.toLowerCase().includes(searchTerm));
                 case 'videogames':
-                    return item.name.toLowerCase().includes(searchTerm);
+                    return (item.title || item.name || '').toLowerCase().includes(searchTerm) ||
+                           (item.genre || '').toLowerCase().includes(searchTerm) ||
+                           (item.platform || '').toLowerCase().includes(searchTerm);
                 case 'weather':
                     return item.name.toLowerCase().includes(searchTerm);
                 case 'football':
@@ -627,28 +675,37 @@ function showDetail(type, item) {
             break;
             
         case 'game':
+            // Mapear campos de la API FastAPI a lo que espera el frontend
+            const gameTitle = item.title || item.name || 'Sin título';
+            const gameImage = item.background_image || item.image || '';
+            const gameRating = item.rating !== undefined ? item.rating : 0;
+            const gameReleased = item.released || (item.release_year !== undefined ? item.release_year.toString() : 'N/A');
+            const gameGenre = item.genre || (item.genres ? (typeof item.genres === 'string' ? JSON.parse(item.genres).map(g => g.name || g).join(', ') : item.genres.map(g => g.name || g).join(', ')) : 'N/A');
+            const gamePlatform = item.platform || (item.platforms ? (typeof item.platforms === 'string' ? JSON.parse(item.platforms).slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ') : item.platforms.slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ')) : 'N/A');
+            
             detailHTML = `
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <img src="${item.background_image}" alt="${item.name}" class="w-full h-64 object-cover">
+                        ${gameImage ? `<img src="${gameImage}" alt="${gameTitle}" class="w-full h-64 object-cover">` : '<div class="w-full h-64 bg-gray-200 flex items-center justify-center"><span class="text-gray-400 text-lg">Sin imagen</span></div>'}
                         <div class="p-6">
-                            <h1 class="text-3xl font-bold mb-4">${item.name}</h1>
+                            <h1 class="text-3xl font-bold mb-4">${gameTitle}</h1>
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div>
                                     <h3 class="font-bold text-lg mb-2">Información General</h3>
                                     <div class="space-y-2">
-                                        <p><strong>Rating:</strong> ${item.rating || 0}/5</p>
-                                        <p><strong>Lanzado:</strong> ${item.released || 'N/A'}</p>
-                                        <p><strong>Géneros:</strong> ${item.genres ? (typeof item.genres === 'string' ? JSON.parse(item.genres).map(g => g.name || g).join(', ') : item.genres.map(g => g.name || g).join(', ')) : 'N/A'}</p>
-                                        <p><strong>Plataformas:</strong> ${item.platforms ? (typeof item.platforms === 'string' ? JSON.parse(item.platforms).slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ') : item.platforms.slice(0, 3).map(p => (p.platform?.name || p.name || p)).join(', ')) : 'N/A'}</p>
+                                        <p><strong>Rating:</strong> ${gameRating}/10</p>
+                                        <p><strong>Lanzado:</strong> ${gameReleased}</p>
+                                        <p><strong>Género:</strong> ${gameGenre}</p>
+                                        <p><strong>Plataforma:</strong> ${gamePlatform}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-lg mb-2">Estadísticas</h3>
+                                    <h3 class="font-bold text-lg mb-2">Detalles</h3>
                                     <div class="space-y-2">
-                                        <p><strong>Metacritic:</strong> ${item.metacritic || 'N/A'}</p>
-                                        <p><strong>Rating Count:</strong> ${item.ratings_count || 0}</p>
-                                        <p><strong>Reviews Count:</strong> ${item.reviews_count || 0}</p>
+                                        <p><strong>ID:</strong> ${item.id || 'N/A'}</p>
+                                        ${item.metacritic ? `<p><strong>Metacritic:</strong> ${item.metacritic}</p>` : ''}
+                                        ${item.ratings_count ? `<p><strong>Rating Count:</strong> ${item.ratings_count}</p>` : ''}
+                                        ${item.reviews_count ? `<p><strong>Reviews Count:</strong> ${item.reviews_count}</p>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -754,15 +811,20 @@ window.addEventListener('popstate', (event) => {
 
 // Inicialización
 document.addEventListener("DOMContentLoaded", () => {
-    getCountries();
-    getWeather();
-    getVideogames();
-    getFootball();
-    
+    console.log('[DOMContentLoaded] Inicializando aplicación');
+    // Cargar datos iniciales solo para las secciones que tienen contenedores visibles
+    // Los datos se cargarán cuando el usuario navegue a cada sección
     const hash = window.location.hash.slice(1);
+    console.log('[DOMContentLoaded] Hash actual:', hash);
     if (hash && ['countries', 'weather', 'videogames', 'football', 'home'].includes(hash)) {
+        console.log('[DOMContentLoaded] Mostrando sección desde hash:', hash);
         showSection(hash);
+        // Cargar datos de la sección inicial
+        if (hash !== 'home' && hash !== 'landing') {
+            loadSectionData(hash);
+        }
     } else {
+        console.log('[DOMContentLoaded] Mostrando landing page');
         showSection('landing');
     }
 });

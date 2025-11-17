@@ -11,10 +11,15 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./instance/dev.db")
 
 # Crear el motor de la base de datos
-engine = create_engine(
-    DATABASE_URL, 
-    connect_args={"check_same_thread": False} # Necesario solo para SQLite
-)
+# Si es PostgreSQL, no necesita connect_args especiales
+# Si es SQLite, necesita check_same_thread=False
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL, 
+        connect_args={"check_same_thread": False} # Necesario solo para SQLite
+    )
+else:
+    engine = create_engine(DATABASE_URL)
 
 # Crear una clase de sesión para interactuar con la base de datos
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

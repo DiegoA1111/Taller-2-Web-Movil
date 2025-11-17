@@ -23,8 +23,8 @@ API para gestionar una colección de videojuegos.
 
 4.  **Ejecutar el servidor:**
     ```bash
-    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
     ```
 
-La API estará disponible en `http://127.0.0.1:8000`.
-La documentación interactiva (Swagger UI) se encuentra en `http://127.0.0.1:8000/docs`.
+La API estará disponible en `http://127.0.0.1:3003`.
+La documentación interactiva (Swagger UI) se encuentra en `http://127.0.0.1:3003/docs`.

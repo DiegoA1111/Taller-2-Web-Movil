@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routers import videogames
 
@@ -9,6 +10,15 @@ app = FastAPI(
     title="API de Videojuegos",
     description="Una API para gestionar información de videojuegos.",
     version="1.0.0"
+)
+
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # En producción, especifica los orígenes permitidos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Incluir el router de videojuegos

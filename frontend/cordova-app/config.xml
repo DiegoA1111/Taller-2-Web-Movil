@@ -18,9 +18,10 @@
     <allow-intent href="geo:*" />
     
     <!-- Permitir conexiones a servidores locales -->
-    <access origin="http://192.168.1.82:3001" />
-    <access origin="http://192.168.1.82:3002" />
-    <access origin="http://192.168.1.82:8000" />
+    <!-- IMPORTANTE: Actualizar estas IPs con tu IP local antes de construir el APK -->
+    <access origin="http://192.168.1.9:3001" />
+    <access origin="http://192.168.1.9:3002" />
+    <access origin="http://192.168.1.9:3003" />
     <access origin="http://localhost:*" />
     <access origin="http://127.0.0.1:*" />
     

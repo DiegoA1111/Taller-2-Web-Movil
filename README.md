@@ -43,7 +43,10 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 
 #### 3. Videojuegos API - FastAPI
 - **Tecnología**: FastAPI (Python)
-- **Estado**: Pendiente de implementar
+- **Base de Datos**: PostgreSQL
+- **Puerto**: 3003
+- **Endpoints**: `/games`
+- **Estado**: Funcional
 - **Ubicación**: `backend/fastapi-api/`
 
 ### Frontend
@@ -223,7 +226,7 @@ Taller-2-Web-Movil/
 │   │   ├── server.js
 │   │   ├── package.json
 │   │   └── README.md
-│   └── fastapi-api/         # API de Videojuegos (FastAPI) - Pendiente
+│   └── fastapi-api/         # API de Videojuegos (FastAPI) - Funcional
 ├── frontend/
 │   ├── index.html           # Frontend principal
 │   ├── apis.js              # Lógica de APIs
@@ -246,6 +249,9 @@ Taller-2-Web-Movil/
 ### Countries API (NestJS - Puerto 3001)
 - `GET /countries` - Obtener todos los países
 
+### Videojuegos API (FastAPI - Puerto 3003)
+- `GET /games` - Obtener todos los videojuegos (con paginación: `?skip=0&limit=40`)
+- `GET /games/{id}` - Obtener un videojuego por ID
 
 ## Características de la Aplicación
 
@@ -256,8 +262,8 @@ Taller-2-Web-Movil/
 - [x] Estados de carga y manejo de errores (del Taller 1)
 - [x] Consumo de API Express (Clima y Fútbol) - Funcional
 - [x] Consumo de API NestJS (Países) - Funcional
-- [ ] Consumo de API FastAPI (Videojuegos) - Pendiente
-- [ ] Empaquetado como APK Android (pendiente)
+- [x] Consumo de API FastAPI (Videojuegos) - Funcional
+- [x] Empaquetado como APK Android - Funcional
 
 ## Desarrollo
 

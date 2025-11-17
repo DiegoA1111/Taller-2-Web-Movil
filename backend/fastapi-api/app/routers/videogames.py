@@ -6,7 +6,7 @@ from .. import crud, models, schemas
 from ..database import get_db
 
 router = APIRouter(
-    prefix="/videogames",
+    prefix="/games",
     tags=["Videojuegos"],
     responses={404: {"description": "No encontrado"}},
 )

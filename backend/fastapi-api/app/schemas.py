@@ -8,6 +8,7 @@ class VideoGameBase(BaseModel):
     platform: str
     release_year: int
     rating: float
+    background_image: Optional[str] = None
 
 # Esquema para la creación de un videojuego (no se necesita el ID)
 class VideoGameCreate(VideoGameBase):
@@ -20,6 +21,7 @@ class VideoGameUpdate(BaseModel):
     platform: Optional[str] = None
     release_year: Optional[int] = None
     rating: Optional[float] = None
+    background_image: Optional[str] = None
 
 # Esquema para leer/devolver un videojuego (incluye el ID)
 class VideoGame(VideoGameBase):

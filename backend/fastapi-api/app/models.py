@@ -10,3 +10,4 @@ class VideoGame(Base):
     platform = Column(String)
     release_year = Column(Integer)
     rating = Column(Float)
+    background_image = Column(String, nullable=True)
