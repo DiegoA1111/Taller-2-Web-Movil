@@ -8,26 +8,47 @@
 
 ## IMPORTANTE: Las APIs deben estar corriendo
 
-**Antes de abrir el frontend, asegúrate de que las 3 APIs estén corriendo en terminales separadas:**
+**Antes de abrir el frontend, asegúrate de que las 3 APIs estén corriendo. Tienes dos opciones:**
 
-1. **Terminal 1 - Express API (Puerto 3002):**
-   ```bash
-   cd backend/express-api
-   npm start
-   ```
+### Opción 1: Inicio Rápido (Recomendado)
 
-2. **Terminal 2 - NestJS API (Puerto 3001):**
-   ```bash
-   cd backend/nestjs-api
-   npm run start:dev
-   ```
+Usa el script `start-servers.ps1` para iniciar todas las APIs automáticamente:
 
-3. **Terminal 3 - FastAPI (Puerto 3003):**
-   ```bash
-   cd backend/fastapi-api
-   venv\Scripts\Activate.ps1  # Windows PowerShell (o source venv/bin/activate en Mac/Linux)
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
-   ```
+```powershell
+.\start-servers.ps1
+```
+
+Este script:
+- Abre 3 ventanas de PowerShell (una por cada API)
+- Inicia Express API en puerto 3002
+- Inicia NestJS API en puerto 3001
+- Inicia FastAPI en puerto 3003 (con venv activado automáticamente)
+- Muestra las URLs de las APIs
+
+**Ventaja:** Inicia todas las APIs de una vez, sin necesidad de abrir múltiples terminales manualmente.
+
+### Opción 2: Inicio Manual
+
+Si prefieres iniciar las APIs manualmente, abre 3 terminales separadas:
+
+**Terminal 1 - Express API (Puerto 3002):**
+```bash
+cd backend/express-api
+npm start
+```
+
+**Terminal 2 - NestJS API (Puerto 3001):**
+```bash
+cd backend/nestjs-api
+npm run start:dev
+```
+
+**Terminal 3 - FastAPI (Puerto 3003):**
+```bash
+cd backend/fastapi-api
+venv\Scripts\Activate.ps1  # Windows PowerShell (o source venv/bin/activate en Mac/Linux)
+uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
+```
 
 **Verificar que las APIs estén corriendo:**
 - Express: Abre http://localhost:3002/health en el navegador
@@ -380,6 +401,15 @@ npm install
 ```
 
 ## Resumen de Comandos
+
+### Opción Rápida (Script Automático)
+
+```powershell
+# Iniciar todas las APIs de una vez
+.\start-servers.ps1
+```
+
+### Opción Manual (Terminales Separadas)
 
 ```bash
 # Terminal 1: Servidor Express (API Clima y Fútbol)
