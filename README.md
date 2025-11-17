@@ -252,19 +252,6 @@ Taller-2-Web-Movil/
 ### Videojuegos API (FastAPI - Puerto 3003)
 - `GET /games` - Obtener todos los videojuegos (con paginación: `?skip=0&limit=40`)
 - `GET /games/{id}` - Obtener un videojuego por ID
-
-## Características de la Aplicación
-
-- [x] Diseño Mobile First con Tailwind CSS (del Taller 1)
-- [x] Navegación SPA (Single Page Application) (del Taller 1)
-- [x] Filtrado y ordenamiento dinámico (del Taller 1)
-- [x] Vistas detalladas por recurso (del Taller 1)
-- [x] Estados de carga y manejo de errores (del Taller 1)
-- [x] Consumo de API Express (Clima y Fútbol) - Funcional
-- [x] Consumo de API NestJS (Países) - Funcional
-- [x] Consumo de API FastAPI (Videojuegos) - Funcional
-- [x] Empaquetado como APK Android - Funcional
-
 ## Desarrollo
 
 ### Modo Desarrollo
@@ -283,24 +270,10 @@ npx http-server
 2. Actualizar las URLs en `apis.js` para apuntar a los servidores de producción
 3. Construir el APK con Cordova
 
-## Estado Actual del Proyecto
-
-Ver [PROGRESO.md](PROGRESO.md) para detalles del estado de desarrollo.
-
-**Nota**: Este proyecto está en desarrollo activo. Algunas funcionalidades pueden estar incompletas o en proceso de implementación.
-
 ## Notas Importantes
-
-- Las APIs están en desarrollo - algunas funcionalidades pueden no estar completamente implementadas
 - Las APIs deben estar ejecutándose antes de usar la aplicación
 - Para producción, cambiar las URLs en `apis.js` de `localhost` a las URLs de los servidores
 - El APK generado requerirá permisos de Internet para consumir las APIs
 - Las bases de datos se inicializarán automáticamente con datos de ejemplo al iniciar las APIs (cuando esté implementado)
 
-## Licencia
 
-Este proyecto fue desarrollado como parte del Taller 2 de Desarrollo Web Móvil.
-
-## Contacto
-
-Para consultas o problemas, contactar al grupo 8.
