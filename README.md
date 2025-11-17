@@ -13,11 +13,22 @@
 
 Este proyecto consiste en el desarrollo de un ecosistema completo compuesto por tres APIs backend independientes y una aplicación web móvil empaquetada como APK Android mediante Apache Cordova.
 
-La aplicación InfoMóvil permitirá a los usuarios acceder a información dinámica sobre:
+La aplicación **InfoMóvil** permitirá a los usuarios acceder a información dinámica sobre:
 1. Países del mundo
 2. Información del clima
 3. Videojuegos
 4. Partidos de fútbol
+
+## 🚀 Inicio Rápido
+
+**Para instrucciones detalladas de instalación, configuración y ejecución, consulta la [Guía de Ejecución](GUIA_EJECUCION.md).**
+
+La guía incluye:
+- Configuración paso a paso de las bases de datos PostgreSQL
+- Instalación y configuración de cada API (Express, NestJS, FastAPI)
+- Configuración del entorno virtual de Python
+- Ejecución del frontend
+- Solución de problemas comunes
 
 ## Arquitectura del Sistema
 
@@ -29,7 +40,7 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 - **Tecnología**: Express.js (Node.js)
 - **Base de Datos**: PostgreSQL
 - **Puerto**: 3002
-- **Endpoints**: `/weather`, `/football`
+- **Endpoints**: `/weather`, `/football`, `/health`
 - **Estado**: Funcional
 - **Ubicación**: `backend/express-api/`
 
@@ -55,7 +66,9 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 - **Framework CSS**: Tailwind CSS
 - **Diseño**: Mobile First
 - **Empaquetado**: Apache Cordova
-- **Ubicación**: `frontend/cordova-app/`
+- **Ubicación**: 
+  - Desarrollo web: `frontend/` (index.html, apis.js, styles.css)
+  - Proyecto Cordova: `frontend/cordova-app/`
 
 ## Tecnologías Utilizadas
 
@@ -83,157 +96,44 @@ El proyecto incluye tres APIs independientes desarrolladas con diferentes tecnol
 - **PostgreSQL** 12+ (base de datos)
 - **npm** o **yarn** (gestor de paquetes Node.js)
 - **pip** (gestor de paquetes Python)
-- **Apache Cordova CLI** (para generar APK)
-- **Android SDK** (para compilar APK)
+- **Apache Cordova CLI** (para generar APK) - Opcional
+- **Android SDK** (para compilar APK) - Opcional
 
-### Instalación de Software Requerido
-
-#### Node.js
-**Windows/Mac:**
-1. Descarga desde: https://nodejs.org/
-2. 2.Ejecutar el instalador
-3. Verificar con `node --version` y `npm --version`
-
-**Linux:**
-```bash
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-#### PostgreSQL
-**Windows:**
-- Descarga desde: https://www.postgresql.org/download/windows/
-- Ejecuta el instalador (elige contraseña para usuario `postgres`)
-
-**Mac:**
-```bash
-brew install postgresql@14
-brew services start postgresql@14
-```
-
-**Linux:**
-```bash
-sudo apt update
-sudo apt install postgresql postgresql-contrib
-sudo systemctl start postgresql
-```
-
-#### Cordova
-```bash
-npm install -g cordova
-```
+Para instrucciones detalladas de instalación, ver [GUIA_EJECUCION.md](GUIA_EJECUCION.md).
 
 ## Instalación y Configuración
 
-### 1. Clonar el Repositorio
-```bash
-git clone <url-del-repositorio>
-cd Taller-2-Web-Movil
-```
+**📖 Consulta la [Guía de Ejecución](GUIA_EJECUCION.md) para instrucciones completas y detalladas.**
 
-### 2. Configurar Bases de Datos PostgreSQL
-Cada integrante crea las bases de datos en su PostgreSQL local:
-```sql
-CREATE DATABASE countries_db;
-CREATE DATABASE weather_db;
-CREATE DATABASE videogames_db;
-```
-Finalmente cada uno configura su archivo `.env` en cada API con sus credenciales locales.
+### Resumen de Pasos
 
-### 3. Configurar y Ejecutar APIs
+1. **Clonar el repositorio**
+2. **Configurar PostgreSQL** (crear bases de datos)
+3. **Configurar y ejecutar las APIs:**
+   - Express API (puerto 3002)
+   - NestJS API (puerto 3001)
+   - FastAPI (puerto 3003)
+4. **Ejecutar el frontend**
 
-#### Countries API (NestJS)
-```bash
-cd backend/nestjs-api
-npm install
-# Crear archivo .env con las credenciales de PostgreSQL
-npm run start:dev
-```
-La API estará disponible en: http://localhost:3001
-
-#### Weather API (Express)
-```bash
-cd backend/express-api
-npm install
-# Copiar .env.example a .env y configurar con tus credenciales
-cp .env.example .env
-# Editar .env con tus datos de PostgreSQL
-npm start
-```
-La API estará disponible en: http://localhost:3002
-
-**Guía rápida de ejecución:** Ver `GUIA_EJECUCION.md` para instrucciones paso a paso de cómo ejecutar el proyecto en su estado actual.
-
-#### Videojuegos API (FastAPI)
-```bash
-cd backend/fastapi-api
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-# Crear archivo .env con las credenciales de PostgreSQL
-uvicorn main:app --reload --port 3003
-```
-La API estará disponible en: http://localhost:3003
-
-### 4. Configurar Frontend
-
-#### Para Desarrollo Web
-Los archivos del frontend están en la carpeta `frontend/`:
-- `frontend/index.html`
-- `frontend/apis.js`
-- `frontend/styles.css`
-
-Abre `frontend/index.html` en un navegador o usa un servidor local apuntando a esa carpeta.
-
-Asegúrate de que las URLs de las APIs en `apis.js` apunten a los servidores locales.
-
-#### Para Empaquetar como APK
-
-1. Copiar archivos al proyecto Cordova:
-```bash
-cd frontend/cordova-app
-cp ../index.html .
-cp ../apis.js .
-cp ../styles.css .
-cp ../tailwind.config.js .
-```
-
-2. Instalar plugins de Cordova:
-```bash
-cordova platform add android
-cordova plugin add cordova-plugin-whitelist
-cordova plugin add cordova-plugin-statusbar
-cordova plugin add cordova-plugin-splashscreen
-```
-
-3. Construir APK:
-```bash
-cordova build android
-```
-
-El APK se generará en: `platforms/android/app/build/outputs/apk/debug/app-debug.apk`
+Para empaquetar como APK, consulta [GUIA_APK.md](frontend/cordova-app/GUIA_APK.md).
 
 ## Estructura del Proyecto
 
 ```
 Taller-2-Web-Movil/
 ├── backend/
-│   ├── nestjs-api/          # API de Países (NestJS) - Funcional
-│   │   ├── src/
-│   │   ├── package.json
-│   │   └── .env.example
-│   ├── express-api/         # API de Clima y Fútbol (Express) - Funcional
-│   │   ├── server.js
-│   │   ├── package.json
-│   │   └── README.md
-│   └── fastapi-api/         # API de Videojuegos (FastAPI) - Funcional
+│   ├── nestjs-api/          # API de Países (NestJS)
+│   ├── express-api/         # API de Clima y Fútbol (Express)
+│   └── fastapi-api/         # API de Videojuegos (FastAPI)
 ├── frontend/
-│   ├── index.html           # Frontend principal
+│   ├── index.html           # Frontend principal (desarrollo web)
 │   ├── apis.js              # Lógica de APIs
-│   ├── styles.css           # Estilos personalizados
-│   ├── tailwind.config.js   # Configuración Tailwind
+│   ├── styles.css           # Estilos
 │   └── cordova-app/         # Proyecto Cordova
-│       └── config.xml
+│       ├── www/             # Archivos copiados para APK
+│       └── config.xml       # Configuración Cordova
+├── GUIA_EJECUCION.md        # Guía detallada de ejecución
+├── GUIA_APK.md              # Guía para generar APK (en frontend/cordova-app/)
 └── README.md                # Este archivo
 ```
 
@@ -252,50 +152,31 @@ Taller-2-Web-Movil/
 ### Videojuegos API (FastAPI - Puerto 3003)
 - `GET /games` - Obtener todos los videojuegos (con paginación: `?skip=0&limit=40`)
 - `GET /games/{id}` - Obtener un videojuego por ID
+- **Documentación Swagger**: http://localhost:3003/docs
 
 ## Características de la Aplicación
 
-- [x] Diseño Mobile First con Tailwind CSS (del Taller 1)
-- [x] Navegación SPA (Single Page Application) (del Taller 1)
-- [x] Filtrado y ordenamiento dinámico (del Taller 1)
-- [x] Vistas detalladas por recurso (del Taller 1)
-- [x] Estados de carga y manejo de errores (del Taller 1)
+- [x] Diseño Mobile First con Tailwind CSS
+- [x] Navegación SPA (Single Page Application)
+- [x] Filtrado y ordenamiento dinámico
+- [x] Vistas detalladas por recurso
+- [x] Estados de carga y manejo de errores
 - [x] Consumo de API Express (Clima y Fútbol) - Funcional
 - [x] Consumo de API NestJS (Países) - Funcional
 - [x] Consumo de API FastAPI (Videojuegos) - Funcional
 - [x] Empaquetado como APK Android - Funcional
 
-## Desarrollo
+## Documentación Adicional
 
-### Modo Desarrollo
-1. Iniciar las tres APIs en terminales separadas
-2. Abrir `frontend/index.html` en un navegador o usar un servidor local:
-```bash
-# Con Python
-python -m http.server 8000
-
-# Con Node.js
-npx http-server
-```
-
-### Modo Producción (APK)
-1. Asegurarse de que todas las APIs estén ejecutándose
-2. Actualizar las URLs en `apis.js` para apuntar a los servidores de producción
-3. Construir el APK con Cordova
-
-## Estado Actual del Proyecto
-
-Ver [PROGRESO.md](PROGRESO.md) para detalles del estado de desarrollo.
-
-**Nota**: Este proyecto está en desarrollo activo. Algunas funcionalidades pueden estar incompletas o en proceso de implementación.
+- **[GUIA_EJECUCION.md](GUIA_EJECUCION.md)** - Guía completa de instalación, configuración y ejecución
+- **[GUIA_APK.md](frontend/cordova-app/GUIA_APK.md)** - Instrucciones para generar el APK Android
 
 ## Notas Importantes
 
-- Las APIs están en desarrollo - algunas funcionalidades pueden no estar completamente implementadas
-- Las APIs deben estar ejecutándose antes de usar la aplicación
+- **Las APIs deben estar ejecutándose antes de usar la aplicación**
 - Para producción, cambiar las URLs en `apis.js` de `localhost` a las URLs de los servidores
 - El APK generado requerirá permisos de Internet para consumir las APIs
-- Las bases de datos se inicializarán automáticamente con datos de ejemplo al iniciar las APIs (cuando esté implementado)
+- Las bases de datos se inicializan automáticamente con datos de ejemplo al iniciar las APIs
 
 ## Licencia
 

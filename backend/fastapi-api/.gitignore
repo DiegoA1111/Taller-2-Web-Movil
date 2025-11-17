@@ -2,7 +2,6 @@
 
 # Entorno virtual
 .venv/
-venv/
 
 # Bases de datos locales
 instance/

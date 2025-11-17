@@ -99,15 +99,24 @@ echo $env:ANDROID_HOME
 
 ### Paso 1: Actualizar Archivos del Frontend
 
-Los archivos del frontend deben estar sincronizados en la carpeta `www/`:
+**Estructura de archivos:**
+- Los archivos originales del frontend están en `frontend/`:
+  - `frontend/index.html`
+  - `frontend/apis.js`
+  - `frontend/styles.css`
+- Estos archivos deben copiarse a `frontend/cordova-app/www/` antes de construir el APK
 
 ```powershell
-# Desde frontend/cordova-app
+# Desde la raíz del proyecto
 cd frontend/cordova-app
+
+# Copiar los archivos del frontend a la carpeta www/ de Cordova
 Copy-Item ..\index.html www\index.html -Force
 Copy-Item ..\apis.js www\apis.js -Force
 Copy-Item ..\styles.css www\styles.css -Force
 ```
+
+**Nota:** Si modificas los archivos en `frontend/`, recuerda copiarlos a `www/` antes de construir el APK.
 
 ### Paso 2: Configurar la IP del Servidor
 
@@ -160,7 +169,9 @@ Antes de construir el APK, asegúrate de que las 3 APIs estén corriendo en tu s
 
 ## Construir el APK
 
-### Paso 1: Configurar Variables de Entorno (si no lo hiciste antes)
+### Paso 1: Configurar Variables de Entorno
+
+**IMPORTANTE:** Estas variables deben configurarse en cada nueva sesión de terminal. Si ya las configuraste en el Paso 3 de "Instalación Paso a Paso", puedes saltar este paso.
 
 En tu terminal PowerShell, ejecuta:
 
@@ -170,6 +181,8 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-20"
 $env:ANDROID_HOME = "C:\Users\TU_USUARIO\AppData\Local\Android\Sdk"
 $env:PATH += ";$env:ANDROID_HOME\tools;$env:ANDROID_HOME\platform-tools"
 ```
+
+**Nota:** Para hacer estas variables permanentes, configúralas en las Variables de Entorno del sistema Windows.
 
 ### Paso 2: Construir el APK
 
@@ -339,12 +352,13 @@ $env:PATH += ";$env:ANDROID_HOME\tools;$env:ANDROID_HOME\platform-tools"
 # 2. Ir al directorio de Cordova
 cd frontend/cordova-app
 
-# 3. Actualizar archivos del frontend
+# 3. Actualizar archivos del frontend (copiar desde frontend/ a www/)
 Copy-Item ..\index.html www\index.html -Force
 Copy-Item ..\apis.js www\apis.js -Force
 Copy-Item ..\styles.css www\styles.css -Force
 
-# 4. Actualizar la IP en www/apis.js y config.xml (ver sección "Configurar la IP del Servidor")
+# 4. Actualizar la IP en www/apis.js y config.xml
+# IMPORTANTE: Edita manualmente estos archivos con tu IP local (ver sección "Configurar la IP del Servidor" arriba)
 
 # 5. Construir APK debug
 echo n | cordova build android

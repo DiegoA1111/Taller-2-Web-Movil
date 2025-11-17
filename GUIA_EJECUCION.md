@@ -8,47 +8,26 @@
 
 ## IMPORTANTE: Las APIs deben estar corriendo
 
-**Antes de abrir el frontend, asegúrate de que las 3 APIs estén corriendo. Tienes dos opciones:**
+**Antes de abrir el frontend, asegúrate de que las 3 APIs estén corriendo en terminales separadas:**
 
-### Opción 1: Inicio Rápido (Recomendado)
+1. **Terminal 1 - Express API (Puerto 3002):**
+   ```bash
+   cd backend/express-api
+   npm start
+   ```
 
-Usa el script `start-servers.ps1` para iniciar todas las APIs automáticamente:
+2. **Terminal 2 - NestJS API (Puerto 3001):**
+   ```bash
+   cd backend/nestjs-api
+   npm run start:dev
+   ```
 
-```powershell
-.\start-servers.ps1
-```
-
-Este script:
-- Abre 3 ventanas de PowerShell (una por cada API)
-- Inicia Express API en puerto 3002
-- Inicia NestJS API en puerto 3001
-- Inicia FastAPI en puerto 3003 (con venv activado automáticamente)
-- Muestra las URLs de las APIs
-
-**Ventaja:** Inicia todas las APIs de una vez, sin necesidad de abrir múltiples terminales manualmente.
-
-### Opción 2: Inicio Manual
-
-Si prefieres iniciar las APIs manualmente, abre 3 terminales separadas:
-
-**Terminal 1 - Express API (Puerto 3002):**
-```bash
-cd backend/express-api
-npm start
-```
-
-**Terminal 2 - NestJS API (Puerto 3001):**
-```bash
-cd backend/nestjs-api
-npm run start:dev
-```
-
-**Terminal 3 - FastAPI (Puerto 3003):**
-```bash
-cd backend/fastapi-api
-venv\Scripts\Activate.ps1  # Windows PowerShell (o source venv/bin/activate en Mac/Linux)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
-```
+3. **Terminal 3 - FastAPI (Puerto 3003):**
+   ```bash
+   cd backend/fastapi-api
+   venv\Scripts\Activate.ps1  # Windows PowerShell (o source venv/bin/activate en Mac/Linux)
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
+   ```
 
 **Verificar que las APIs estén corriendo:**
 - Express: Abre http://localhost:3002/health en el navegador
@@ -271,7 +250,14 @@ INFO:     Application startup complete.
 
 ### 9. Abrir el Frontend
 
-**Importante:** Se debería usar un servidor local para el frontend por lo siguiente:
+**Estructura del Frontend:**
+- Los archivos del frontend para desarrollo web están en `frontend/`:
+  - `frontend/index.html`
+  - `frontend/apis.js`
+  - `frontend/styles.css`
+- Los archivos para Cordova/APK están en `frontend/cordova-app/www/` (se copian desde `frontend/`)
+
+**Importante:** Se debe usar un servidor local para el frontend por lo siguiente:
 - Evita problemas de CORS al consumir las APIs locales
 - Simula mejor el entorno de producción
 - Es más cercano a cómo funcionará cuando se empaquete con Cordova
@@ -281,12 +267,14 @@ INFO:     Application startup complete.
 # Instalar http-server globalmente (solo una vez)
 npm install -g http-server
 
-# Luego, desde la carpeta frontend
+# Luego, desde la carpeta frontend (donde están index.html, apis.js, styles.css)
 cd frontend
 http-server -p 8000
 ```
 
 Luego abre: http://localhost:8000
+
+**Nota:** Para empaquetar como APK, consulta [GUIA_APK.md](frontend/cordova-app/GUIA_APK.md).
 
 ### 10. Probar la Aplicación
 
@@ -400,34 +388,22 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-## Resumen de Comandos
+## Resumen de Comandos Rápidos
 
-### Opción Rápida (Script Automático)
-
-```powershell
-# Iniciar todas las APIs de una vez
-.\start-servers.ps1
-```
-
-### Opción Manual (Terminales Separadas)
+**Nota:** Estos comandos asumen que ya has completado la configuración inicial (crear bases de datos, configurar `.env`, etc.). Para instrucciones completas, sigue los pasos detallados arriba.
 
 ```bash
 # Terminal 1: Servidor Express (API Clima y Fútbol)
 cd backend/express-api
-npm install          # Solo primera vez
 npm start
 
 # Terminal 2: Servidor NestJS (API Países)
 cd backend/nestjs-api
-npm install          # Solo primera vez
 npm run start:dev
 
 # Terminal 3: Servidor FastAPI (API Videojuegos)
 cd backend/fastapi-api
-python -m venv venv  # Solo primera vez
 venv\Scripts\Activate.ps1  # Windows PowerShell (o source venv/bin/activate en Mac/Linux)
-pip install -r requirements.txt  # Solo primera vez
-python seed.py       # Solo primera vez (para poblar la BD)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 3003
 
 # Terminal 4: Servidor Frontend
@@ -435,4 +411,6 @@ cd frontend
 http-server -p 8000
 # Luego abrir: http://localhost:8000
 ```
+
+**Recordatorio:** Asegúrate de que las 3 APIs estén corriendo antes de abrir el frontend.
 
